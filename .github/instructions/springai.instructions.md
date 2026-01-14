@@ -78,6 +78,8 @@ Cuando el feature requiera conocimiento externo:
 ## Herramientas (Function Calling)
 
 - Implementar “tools” como servicios Spring con contratos claros.
+- **Integraciones:** Si un starter de Spring AI falla por conflictos de versiones (BOM), preferir implementar el cliente manualmente con `RestClient` (nativo de Spring Boot) antes que introducir SDKs de terceros no gestionados.
+- **Salida Estructurada:** Los nodos ejecutores de herramientas deben devolver resultados estructurados (JSON stringified) para facilitar su consumo por el siguiente agente en la cadena.
 - Las herramientas deben ser:
   - deterministas (cuando aplique)
   - idempotentes (cuando sea posible)
@@ -111,10 +113,10 @@ El repositorio debe soportar patrones agénticos sin depender de puertos inmadur
 ### Patrones agénticos que deben poder implementarse
 
 - **Chain workflow** (secuencial)
-- **Parallelization** (con `CompletableFuture` cuando sea útil)
+- **Parallelization** (Batching): Usar `CompletableFuture` para ejecutar múltiples llamadas a herramientas independientes en paralelo (p.ej. múltiples queries de búsqueda).
 - **Routing** (clasificación de intención → seleccionar flujo/herramienta)
 - **Orchestrator-Workers** (descomposición y delegación)
-- **Evaluator-Optimizer** (feedback loop con evaluación automatizada)
+- **Reflexion (Evaluator-Optimizer):** Ciclos de retroalimentación donde un agente "Revisor" mejora la salida basándose en crítica y evidencias externas, usando un estado compartido tipado.
 
 ## MCP (Model Context Protocol)
 
